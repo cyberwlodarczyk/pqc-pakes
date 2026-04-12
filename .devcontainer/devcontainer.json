@@ -1,13 +1,13 @@
 {
-  "name": "PQC PAKEs",
-  "image": "docker.io/cyberwlodarczyk/pqc-pakes:dev",
+  "name": "PQC PAKE",
+  "image": "docker.io/cyberwlodarczyk/pqc-pake:dev",
   "customizations": {
     "vscode": {
       "extensions": ["ms-vscode.cpptools", "ms-vscode.cmake-tools"],
       "settings": {
         "C_Cpp.default.includePath": [
           "${containerEnv:LIBOQS_DIR}/include",
-          "${containerEnv:PQC_PAKES_DIR}/include",
+          "${containerEnv:PQC_PAKE_DIR}/include",
           "/usr/include"
         ]
       }

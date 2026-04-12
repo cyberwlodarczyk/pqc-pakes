@@ -1,1 +1,1 @@
-# PQC PAKEs
+# PQC PAKE

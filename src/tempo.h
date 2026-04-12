@@ -1,0 +1,16 @@
+#ifndef PQC_PAKE_TEMPO_H
+#define PQC_PAKE_TEMPO_H
+
+void PQC_PAKE_TEMPO_A1();
+
+void PQC_PAKE_TEMPO_B1();
+
+void PQC_PAKE_TEMPO_A2();
+
+void PQC_PAKE_TEMPO_RE_A1();
+
+void PQC_PAKE_TEMPO_RE_B1();
+
+void PQC_PAKE_TEMPO_RE_A2();
+
+#endif
