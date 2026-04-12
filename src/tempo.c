@@ -1,25 +1,25 @@
 #include "tempo.h"
 
-void PQC_PAKE_TEMPO_A1()
+void PQC_PAKE_TEMPO_a1()
 {
 }
 
-void PQC_PAKE_TEMPO_B1()
+void PQC_PAKE_TEMPO_b1()
 {
 }
 
-void PQC_PAKE_TEMPO_A2()
+void PQC_PAKE_TEMPO_a2()
 {
 }
 
-void PQC_PAKE_TEMPO_RE_A1()
+void PQC_PAKE_TEMPO_re_a1()
 {
 }
 
-void PQC_PAKE_TEMPO_RE_B1()
+void PQC_PAKE_TEMPO_re_b1()
 {
 }
 
-void PQC_PAKE_TEMPO_RE_A2()
+void PQC_PAKE_TEMPO_re_a2()
 {
 }

@@ -3,34 +3,33 @@
 #include <oqs/kem.h>
 #include "kem.h"
 
+#define LEN_PUBLIC_SEED 32
+
 PQC_PAKE_KEM *PQC_PAKE_KEM_new(const char *alg)
 {
+    const char *oqs_alg = NULL;
+    if (strcmp(alg, PQC_PAKE_KEM_alg_kyber_512) == 0)
+    {
+        oqs_alg = OQS_KEM_alg_ml_kem_512;
+    }
+    else if (strcmp(alg, PQC_PAKE_KEM_alg_kyber_768) == 0)
+    {
+        oqs_alg = OQS_KEM_alg_ml_kem_768;
+    }
+    else if (strcmp(alg, PQC_PAKE_KEM_alg_kyber_1024) == 0)
+    {
+        oqs_alg = OQS_KEM_alg_ml_kem_1024;
+    }
+    else
+    {
+        return NULL;
+    }
     PQC_PAKE_KEM *kem = OQS_MEM_malloc(sizeof(PQC_PAKE_KEM));
     if (kem == NULL)
     {
         return NULL;
     }
-    if (strcmp(alg, PQC_PAKE_KEM_alg_kyber_512) == 0)
-    {
-        kem->alg = alg;
-        kem->oqs_alg = OQS_KEM_alg_ml_kem_512;
-    }
-    else if (strcmp(alg, PQC_PAKE_KEM_alg_kyber_768) == 0)
-    {
-        kem->alg = alg;
-        kem->oqs_alg = OQS_KEM_alg_ml_kem_768;
-    }
-    else if (strcmp(alg, PQC_PAKE_KEM_alg_kyber_1024) == 0)
-    {
-        kem->alg = alg;
-        kem->oqs_alg = OQS_KEM_alg_ml_kem_1024;
-    }
-    else
-    {
-        OQS_MEM_secure_free(kem, sizeof(PQC_PAKE_KEM));
-        return NULL;
-    }
-    OQS_KEM *oqs_kem = OQS_KEM_new(kem->oqs_alg);
+    OQS_KEM *oqs_kem = OQS_KEM_new(oqs_alg);
     if (oqs_kem == NULL)
     {
         OQS_MEM_secure_free(kem, sizeof(PQC_PAKE_KEM));
@@ -38,7 +37,7 @@ PQC_PAKE_KEM *PQC_PAKE_KEM_new(const char *alg)
     }
     kem->oqs_kem = oqs_kem;
     kem->len_public_key = oqs_kem->length_public_key;
-    kem->len_public_seed = 32;
+    kem->len_public_seed = LEN_PUBLIC_SEED;
     kem->len_public_poly = kem->len_public_key - kem->len_public_seed;
     kem->len_secret_key = oqs_kem->length_secret_key;
     kem->len_ciphertext = oqs_kem->length_ciphertext;
@@ -96,9 +95,7 @@ int PQC_PAKE_KEM_encaps(
             public_key) != OQS_SUCCESS)
     {
         OQS_MEM_secure_free(*ciphertext, kem->len_ciphertext);
-        OQS_MEM_secure_free(
-            *shared_secret,
-            kem->len_shared_secret);
+        OQS_MEM_secure_free(*shared_secret, kem->len_shared_secret);
         return 0;
     }
     return 1;
@@ -121,6 +118,7 @@ int PQC_PAKE_KEM_decaps(
             ciphertext,
             secret_key) != OQS_SUCCESS)
     {
+        OQS_MEM_secure_free(*shared_secret, kem->len_shared_secret);
         return 0;
     }
     return 1;

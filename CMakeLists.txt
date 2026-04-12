@@ -10,7 +10,7 @@ target_sources(
     pqc-pake
     PRIVATE
         src/kem.c
-        src/nice_pake.c
+        src/nice.c
         src/rkem.c
         src/tempo.c
     PUBLIC
@@ -19,7 +19,7 @@ target_sources(
             src
         FILES
             src/kem.h
-            src/nice_pake.h
+            src/nice.h
             src/rkem.h
             src/tempo.h
 )

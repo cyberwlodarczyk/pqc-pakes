@@ -36,7 +36,7 @@ ARG LDFLAGS
 COPY --from=build ${LIBOQS_DIR} ${LIBOQS_DIR}
 COPY --from=build ${PQC_PAKE_DIR} ${PQC_PAKE_DIR}
 RUN apt-get update
-RUN apt-get -y install gcc cmake
+RUN apt-get -y install gcc cmake libssl-dev
 ENV LIBOQS_DIR=${LIBOQS_DIR}
 ENV PQC_PAKE_DIR=${PQC_PAKE_DIR}
 ENV CFLAGS=${CFLAGS}

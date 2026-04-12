@@ -9,8 +9,6 @@
 
 typedef struct
 {
-    const char *alg;
-    const char *oqs_alg;
     OQS_KEM *oqs_kem;
     size_t len_public_key;
     size_t len_public_seed;
