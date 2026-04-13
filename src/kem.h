@@ -10,45 +10,67 @@
 typedef struct
 {
     OQS_KEM *oqs_kem;
+    uint8_t *public_key;
+    uint8_t *secret_key;
+    uint8_t *public_seed;
+    uint8_t *public_poly;
+    uint8_t *shared_secret;
     size_t len_public_key;
     size_t len_public_seed;
     size_t len_public_poly;
     size_t len_secret_key;
     size_t len_ciphertext;
     size_t len_shared_secret;
-} PQC_PAKE_KEM;
+} PQC_PAKE_KEM_a;
 
-PQC_PAKE_KEM *PQC_PAKE_KEM_new(const char *alg);
+PQC_PAKE_KEM_a *PQC_PAKE_KEM_a_new(const char *alg);
 
-int PQC_PAKE_KEM_keygen(
-    const PQC_PAKE_KEM *kem,
+int PQC_PAKE_KEM_a_keygen(
+    PQC_PAKE_KEM_a *kem,
     uint8_t **public_key,
     uint8_t **secret_key);
 
-int PQC_PAKE_KEM_encaps(
-    const PQC_PAKE_KEM *kem,
-    uint8_t **ciphertext,
-    uint8_t **shared_secret,
-    const uint8_t *public_key);
-
-int PQC_PAKE_KEM_decaps(
-    const PQC_PAKE_KEM *kem,
-    uint8_t **shared_secret,
-    const uint8_t *ciphertext,
-    const uint8_t *secret_key);
-
-int PQC_PAKE_KEM_split(
-    const PQC_PAKE_KEM *kem,
+int PQC_PAKE_KEM_a_split(
+    PQC_PAKE_KEM_a *kem,
     uint8_t **seed,
     uint8_t **poly,
     const uint8_t *public_key);
 
-int PQC_PAKE_KEM_join(
-    const PQC_PAKE_KEM *kem,
+int PQC_PAKE_KEM_a_decaps(
+    PQC_PAKE_KEM_a *kem,
+    uint8_t **shared_secret,
+    const uint8_t *ciphertext);
+
+void PQC_PAKE_KEM_a_free(PQC_PAKE_KEM_a *kem);
+
+typedef struct
+{
+    OQS_KEM *oqs_kem;
+    uint8_t *public_key;
+    uint8_t *ciphertext;
+    uint8_t *shared_secret;
+    size_t len_public_key;
+    size_t len_public_seed;
+    size_t len_public_poly;
+    size_t len_secret_key;
+    size_t len_ciphertext;
+    size_t len_shared_secret;
+} PQC_PAKE_KEM_b;
+
+PQC_PAKE_KEM_b *PQC_PAKE_KEM_b_new(const char *alg);
+
+int PQC_PAKE_KEM_b_join(
+    PQC_PAKE_KEM_b *kem,
     uint8_t **public_key,
     const uint8_t *seed,
     const uint8_t *poly);
 
-void PQC_PAKE_KEM_free(PQC_PAKE_KEM *kem);
+int PQC_PAKE_KEM_b_encaps(
+    PQC_PAKE_KEM_b *kem,
+    uint8_t **ciphertext,
+    uint8_t **shared_secret,
+    const uint8_t *public_key);
+
+void PQC_PAKE_KEM_b_free(PQC_PAKE_KEM_b *kem);
 
 #endif

@@ -3,56 +3,82 @@
 #include <string.h>
 #include <pqc-pake/nice.h>
 
-int main()
+#define N 100
+#define PASSWORD "secret"
+
+int test(PQC_PAKE_NICE_a *a_nice, PQC_PAKE_NICE_b *b_nice)
 {
-    const char *pw = "secret";
-    PQC_PAKE_NICE *nice = PQC_PAKE_NICE_new(PQC_PAKE_KEM_alg_kyber_768, pw);
-    if (nice == NULL)
+    uint8_t *a_public_seed = NULL;
+    uint8_t *a_public_poly = NULL;
+    if (!PQC_PAKE_NICE_a_keygen(a_nice, &a_public_seed, &a_public_poly))
     {
-        return EXIT_FAILURE;
+        return 0;
     }
-    uint8_t *seed = NULL;
-    uint8_t *poly = NULL;
-    if (!PQC_PAKE_NICE_a1(nice, &seed, &poly))
-    {
-        PQC_PAKE_NICE_free(nice);
-        return EXIT_FAILURE;
-    }
-    uint8_t *ciphertext = NULL;
-    uint8_t *a_shared_secret = NULL;
-    if (!PQC_PAKE_NICE_b1(
-            nice,
-            &ciphertext,
-            &a_shared_secret,
-            seed,
-            poly))
-    {
-        OQS_MEM_secure_free(seed, nice->kem->len_public_seed);
-        OQS_MEM_secure_free(poly, nice->kem->len_public_poly);
-        PQC_PAKE_NICE_free(nice);
-        return EXIT_FAILURE;
-    }
-    OQS_MEM_secure_free(seed, nice->kem->len_public_seed);
-    OQS_MEM_secure_free(poly, nice->kem->len_public_poly);
+    uint8_t *b_ciphertext = NULL;
     uint8_t *b_shared_secret = NULL;
-    if (!PQC_PAKE_NICE_a2(nice, &b_shared_secret, ciphertext))
+    if (!PQC_PAKE_NICE_b_encaps(
+            b_nice,
+            &b_ciphertext,
+            &b_shared_secret,
+            a_public_seed,
+            a_public_poly))
     {
-        OQS_MEM_secure_free(a_shared_secret, nice->kem->len_shared_secret);
-        OQS_MEM_secure_free(ciphertext, nice->kem->len_ciphertext);
-        PQC_PAKE_NICE_free(nice);
-        return EXIT_FAILURE;
+        return 0;
     }
-    OQS_MEM_secure_free(ciphertext, nice->kem->len_ciphertext);
-    int cmp = memcmp(a_shared_secret, b_shared_secret, nice->kem->len_shared_secret);
-    OQS_MEM_secure_free(a_shared_secret, nice->kem->len_shared_secret);
-    OQS_MEM_secure_free(b_shared_secret, nice->kem->len_shared_secret);
-    PQC_PAKE_NICE_free(nice);
-    if (cmp == 0)
+    uint8_t *a_shared_secret = NULL;
+    if (!PQC_PAKE_NICE_a_decaps(a_nice, &a_shared_secret, b_ciphertext))
     {
-        return EXIT_SUCCESS;
+        return 0;
+    }
+    if (memcmp(a_shared_secret, b_shared_secret, a_nice->kem->len_shared_secret) == 0)
+    {
+        return 1;
     }
     else
     {
+        return 0;
+    }
+}
+
+int test_n(const char *alg, const char *pw, int n)
+{
+    for (int i = 0; i < n; i++)
+    {
+        PQC_PAKE_NICE_a *a_nice = PQC_PAKE_NICE_a_new(alg, pw);
+        if (a_nice == NULL)
+        {
+            return 0;
+        }
+        PQC_PAKE_NICE_b *b_nice = PQC_PAKE_NICE_b_new(alg, pw);
+        if (b_nice == NULL)
+        {
+            PQC_PAKE_NICE_a_free(a_nice);
+            return 0;
+        }
+        int ok = test(a_nice, b_nice);
+        PQC_PAKE_NICE_a_free(a_nice);
+        PQC_PAKE_NICE_b_free(b_nice);
+        if (!ok)
+        {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int main()
+{
+    if (!test_n(PQC_PAKE_KEM_alg_kyber_512, PASSWORD, N))
+    {
         return EXIT_FAILURE;
     }
+    if (!test_n(PQC_PAKE_KEM_alg_kyber_768, PASSWORD, N))
+    {
+        return EXIT_FAILURE;
+    }
+    if (!test_n(PQC_PAKE_KEM_alg_kyber_1024, PASSWORD, N))
+    {
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
 }
