@@ -6,7 +6,6 @@
       "extensions": ["ms-vscode.cpptools", "ms-vscode.cmake-tools"],
       "settings": {
         "C_Cpp.default.includePath": [
-          "${containerEnv:LIBOQS_DIR}/include",
           "${containerEnv:PQC_PAKE_DIR}/include",
           "/usr/include"
         ]

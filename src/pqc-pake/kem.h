@@ -1,29 +1,23 @@
 #ifndef PQC_PAKE_KEM_H
 #define PQC_PAKE_KEM_H
 
-#include <oqs/kem.h>
-
-#define PQC_PAKE_KEM_alg_kyber_512 "kyber-512"
-#define PQC_PAKE_KEM_alg_kyber_768 "kyber-768"
-#define PQC_PAKE_KEM_alg_kyber_1024 "kyber-1024"
+#define PQC_PAKE_KEM_len_public_key 1184
+#define PQC_PAKE_KEM_len_public_seed 32
+#define PQC_PAKE_KEM_len_public_poly 1152
+#define PQC_PAKE_KEM_len_secret_key 2400
+#define PQC_PAKE_KEM_len_ciphertext 1088
+#define PQC_PAKE_KEM_len_shared_secret 32
 
 typedef struct
 {
-    OQS_KEM *oqs_kem;
     uint8_t *public_key;
     uint8_t *secret_key;
     uint8_t *public_seed;
     uint8_t *public_poly;
     uint8_t *shared_secret;
-    size_t len_public_key;
-    size_t len_public_seed;
-    size_t len_public_poly;
-    size_t len_secret_key;
-    size_t len_ciphertext;
-    size_t len_shared_secret;
 } PQC_PAKE_KEM_a;
 
-PQC_PAKE_KEM_a *PQC_PAKE_KEM_a_new(const char *alg);
+PQC_PAKE_KEM_a *PQC_PAKE_KEM_a_new();
 
 int PQC_PAKE_KEM_a_keygen(
     PQC_PAKE_KEM_a *kem,
@@ -45,19 +39,12 @@ void PQC_PAKE_KEM_a_free(PQC_PAKE_KEM_a *kem);
 
 typedef struct
 {
-    OQS_KEM *oqs_kem;
     uint8_t *public_key;
     uint8_t *ciphertext;
     uint8_t *shared_secret;
-    size_t len_public_key;
-    size_t len_public_seed;
-    size_t len_public_poly;
-    size_t len_secret_key;
-    size_t len_ciphertext;
-    size_t len_shared_secret;
 } PQC_PAKE_KEM_b;
 
-PQC_PAKE_KEM_b *PQC_PAKE_KEM_b_new(const char *alg);
+PQC_PAKE_KEM_b *PQC_PAKE_KEM_b_new();
 
 int PQC_PAKE_KEM_b_join(
     PQC_PAKE_KEM_b *kem,

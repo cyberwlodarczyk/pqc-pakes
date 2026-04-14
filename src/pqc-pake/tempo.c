@@ -1,7 +1,9 @@
+#include <string.h>
+#include <openssl/crypto.h>
+#include <openssl/evp.h>
 #include "tempo.h"
 
 PQC_PAKE_TEMPO_a *PQC_PAKE_TEMPO_a_new(
-    const char *alg,
     const char *pw,
     uint64_t sid,
     uint64_t a,
@@ -28,7 +30,6 @@ void PQC_PAKE_TEMPO_a_free(PQC_PAKE_TEMPO_a *tempo)
 }
 
 PQC_PAKE_TEMPO_b *PQC_PAKE_TEMPO_b_new(
-    const char *alg,
     const char *pw,
     uint64_t sid,
     uint64_t a,

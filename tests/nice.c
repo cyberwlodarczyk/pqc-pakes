@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <pqc-pake/nice.h>
 
@@ -30,7 +31,10 @@ int test(PQC_PAKE_NICE_a *a_nice, PQC_PAKE_NICE_b *b_nice)
     {
         return 0;
     }
-    if (memcmp(a_shared_secret, b_shared_secret, a_nice->kem->len_shared_secret) == 0)
+    if (memcmp(
+            a_shared_secret,
+            b_shared_secret,
+            PQC_PAKE_KEM_len_shared_secret) == 0)
     {
         return 1;
     }
@@ -40,16 +44,16 @@ int test(PQC_PAKE_NICE_a *a_nice, PQC_PAKE_NICE_b *b_nice)
     }
 }
 
-int test_n(const char *alg, const char *pw, int n)
+int test_n(const char *pw, int n)
 {
     for (int i = 0; i < n; i++)
     {
-        PQC_PAKE_NICE_a *a_nice = PQC_PAKE_NICE_a_new(alg, pw);
+        PQC_PAKE_NICE_a *a_nice = PQC_PAKE_NICE_a_new(pw);
         if (a_nice == NULL)
         {
             return 0;
         }
-        PQC_PAKE_NICE_b *b_nice = PQC_PAKE_NICE_b_new(alg, pw);
+        PQC_PAKE_NICE_b *b_nice = PQC_PAKE_NICE_b_new(pw);
         if (b_nice == NULL)
         {
             PQC_PAKE_NICE_a_free(a_nice);
@@ -68,17 +72,12 @@ int test_n(const char *alg, const char *pw, int n)
 
 int main()
 {
-    if (!test_n(PQC_PAKE_KEM_alg_kyber_512, PASSWORD, N))
+    if (test_n(PASSWORD, N))
     {
-        return EXIT_FAILURE;
+        return EXIT_SUCCESS;
     }
-    if (!test_n(PQC_PAKE_KEM_alg_kyber_768, PASSWORD, N))
+    else
     {
-        return EXIT_FAILURE;
+        return EXIT_SUCCESS;
     }
-    if (!test_n(PQC_PAKE_KEM_alg_kyber_1024, PASSWORD, N))
-    {
-        return EXIT_FAILURE;
-    }
-    return EXIT_SUCCESS;
 }

@@ -1,6 +1,6 @@
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
-#include <oqs/oqs.h>
 #include <pqc-pake/kem.h>
 
 #define N 100
@@ -15,18 +15,29 @@ int test(PQC_PAKE_KEM_a *a_kem, PQC_PAKE_KEM_b *b_kem)
     }
     uint8_t *a_public_seed = NULL;
     uint8_t *a_public_poly = NULL;
-    if (!PQC_PAKE_KEM_a_split(a_kem, &a_public_seed, &a_public_poly, a_public_key))
+    if (!PQC_PAKE_KEM_a_split(
+            a_kem,
+            &a_public_seed,
+            &a_public_poly,
+            a_public_key))
     {
         return 0;
     }
     uint8_t *b_public_key = NULL;
-    if (!PQC_PAKE_KEM_b_join(b_kem, &b_public_key, a_public_seed, a_public_poly))
+    if (!PQC_PAKE_KEM_b_join(b_kem,
+                             &b_public_key,
+                             a_public_seed,
+                             a_public_poly))
     {
         return 0;
     }
     uint8_t *b_ciphertext = NULL;
     uint8_t *b_shared_secret = NULL;
-    if (!PQC_PAKE_KEM_b_encaps(b_kem, &b_ciphertext, &b_shared_secret, b_public_key))
+    if (!PQC_PAKE_KEM_b_encaps(
+            b_kem,
+            &b_ciphertext,
+            &b_shared_secret,
+            b_public_key))
     {
         return 0;
     }
@@ -35,7 +46,10 @@ int test(PQC_PAKE_KEM_a *a_kem, PQC_PAKE_KEM_b *b_kem)
     {
         return 0;
     }
-    if (memcmp(a_shared_secret, b_shared_secret, a_kem->len_shared_secret) == 0)
+    if (memcmp(
+            a_shared_secret,
+            b_shared_secret,
+            PQC_PAKE_KEM_len_shared_secret) == 0)
     {
         return 1;
     }
@@ -45,16 +59,16 @@ int test(PQC_PAKE_KEM_a *a_kem, PQC_PAKE_KEM_b *b_kem)
     }
 }
 
-int test_n(const char *alg, int n)
+int test_n(int n)
 {
     for (int i = 0; i < n; i++)
     {
-        PQC_PAKE_KEM_a *a_kem = PQC_PAKE_KEM_a_new(alg);
+        PQC_PAKE_KEM_a *a_kem = PQC_PAKE_KEM_a_new();
         if (a_kem == NULL)
         {
             return 0;
         }
-        PQC_PAKE_KEM_b *b_kem = PQC_PAKE_KEM_b_new(alg);
+        PQC_PAKE_KEM_b *b_kem = PQC_PAKE_KEM_b_new();
         if (b_kem == NULL)
         {
             PQC_PAKE_KEM_a_free(a_kem);
@@ -73,17 +87,12 @@ int test_n(const char *alg, int n)
 
 int main()
 {
-    if (!test_n(PQC_PAKE_KEM_alg_kyber_512, N))
+    if (test_n(N))
     {
-        return EXIT_FAILURE;
+        return EXIT_SUCCESS;
     }
-    if (!test_n(PQC_PAKE_KEM_alg_kyber_768, N))
+    else
     {
-        return EXIT_FAILURE;
+        return EXIT_SUCCESS;
     }
-    if (!test_n(PQC_PAKE_KEM_alg_kyber_1024, N))
-    {
-        return EXIT_FAILURE;
-    }
-    return EXIT_SUCCESS;
 }

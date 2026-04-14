@@ -7,10 +7,9 @@ typedef struct
 {
     PQC_PAKE_KEM_a *kem;
     uint8_t *password;
-    size_t len_password;
 } PQC_PAKE_NICE_a;
 
-PQC_PAKE_NICE_a *PQC_PAKE_NICE_a_new(const char *alg, const char *pw);
+PQC_PAKE_NICE_a *PQC_PAKE_NICE_a_new(const char *pw);
 
 int PQC_PAKE_NICE_a_keygen(
     PQC_PAKE_NICE_a *nice,
@@ -28,10 +27,9 @@ typedef struct
 {
     PQC_PAKE_KEM_b *kem;
     uint8_t *password;
-    size_t len_password;
 } PQC_PAKE_NICE_b;
 
-PQC_PAKE_NICE_b *PQC_PAKE_NICE_b_new(const char *alg, const char *pw);
+PQC_PAKE_NICE_b *PQC_PAKE_NICE_b_new(const char *pw);
 
 int PQC_PAKE_NICE_b_encaps(
     PQC_PAKE_NICE_b *nice,

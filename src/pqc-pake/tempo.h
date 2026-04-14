@@ -12,7 +12,6 @@ typedef struct
 } PQC_PAKE_TEMPO_a;
 
 PQC_PAKE_TEMPO_a *PQC_PAKE_TEMPO_a_new(
-    const char *alg,
     const char *pw,
     uint64_t sid,
     uint64_t a,
@@ -36,7 +35,6 @@ typedef struct
 } PQC_PAKE_TEMPO_b;
 
 PQC_PAKE_TEMPO_b *PQC_PAKE_TEMPO_b_new(
-    const char *alg,
     const char *pw,
     uint64_t sid,
     uint64_t a,
